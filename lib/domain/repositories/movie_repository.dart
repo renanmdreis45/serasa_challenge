@@ -1,4 +1,5 @@
 import 'package:serasa_challenge/domain/entities/movie_details.dart';
+
 import '../entities/movie.dart';
 
 abstract class MovieRepository {
