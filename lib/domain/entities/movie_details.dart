@@ -26,24 +26,4 @@ class MovieDetails {
     genre: genre,
     synopsis: synopsis,
   );
-
-  factory MovieDetails.fromJson(Map<String, dynamic> json) {
-    return MovieDetails(
-      title: json['title'] as String,
-      director: json['director'] as String,
-      year: json['year'] as int,
-      genre: json['genre'] as String,
-      synopsis: json['synopsis'] as String,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'director': director,
-      'year': year,
-      'genre': genre,
-      'synopsis': synopsis,
-    };
-  }
 }
