@@ -4,7 +4,7 @@ import 'package:serasa_challenge/core/constants/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/entities/movie.dart';
-import '../mappers/movie_mapper.dart';
+import '../api/mappers/movie_mapper.dart';
 
 abstract class MovieLocalDataSource {
   Future<List<Movie>> getRecentMovies();
@@ -16,14 +16,19 @@ class MovieLocalDataSourceImpl implements MovieLocalDataSource {
   Future<List<Movie>> getRecentMovies() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final moviesJsonList =
-          prefs.getStringList(AppConstants.recentMoviesKey) ?? [];
 
-      final List<Map<String, dynamic>> movieMaps = moviesJsonList
-          .map((jsonString) => json.decode(jsonString) as Map<String, dynamic>)
+      final recentMoviesJsonString = prefs.getString(
+        AppConstants.recentMoviesKey,
+      );
+
+      if (recentMoviesJsonString == null || recentMoviesJsonString.isEmpty) {
+        return [];
+      }
+
+      final List<dynamic> recentMoviesJson = jsonDecode(recentMoviesJsonString);
+      return recentMoviesJson
+          .map((movieJson) => MovieMapper.fromJson(movieJson))
           .toList();
-
-      return MovieMapper.fromJsonList(movieMaps);
     } catch (e) {
       return [];
     }
@@ -32,34 +37,26 @@ class MovieLocalDataSourceImpl implements MovieLocalDataSource {
   @override
   Future<void> saveRecentMovie(Movie movie) async {
     try {
-      final currentMovies = await getRecentMovies();
+      final prefs = await SharedPreferences.getInstance();
 
-      currentMovies.removeWhere(
-        (m) =>
-            m.title == movie.title &&
-            m.director == movie.director &&
-            m.year == movie.year,
-      );
+      List<Movie> recentMovies = await getRecentMovies();
 
-      currentMovies.insert(0, movie);
+      recentMovies.removeWhere((existingMovie) => existingMovie.id == movie.id);
 
-      if (currentMovies.length > AppConstants.maxRecentMovies) {
-        currentMovies.removeRange(AppConstants.maxRecentMovies, currentMovies.length);
+      recentMovies.insert(0, movie);
+
+      if (recentMovies.length > AppConstants.maxRecentMovies) {
+        recentMovies = recentMovies.take(AppConstants.maxRecentMovies).toList();
       }
 
-      await _saveMoviesList(currentMovies);
+      final recentMoviesJson = recentMovies
+          .map((movie) => MovieMapper.toJson(movie))
+          .toList();
+
+      final jsonString = jsonEncode(recentMoviesJson);
+      await prefs.setString(AppConstants.recentMoviesKey, jsonString);
     } catch (e) {
-      throw Exception('Erro ao salvar filme recente: $e');
+      print(e);
     }
-  }
-
-  Future<void> _saveMoviesList(List<Movie> movies) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    final List<String> moviesJsonList = movies
-        .map((movie) => json.encode(MovieMapper.toJson(movie)))
-        .toList();
-
-    await prefs.setStringList(AppConstants.recentMoviesKey, moviesJsonList);
   }
 }

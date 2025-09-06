@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:serasa_challenge/modules/home/home_page.dart';
+import 'package:serasa_challenge/core/widgets/page_transitions.dart';
+import 'package:serasa_challenge/modules/home/factories/home_page_factory.dart';
+import 'package:serasa_challenge/modules/movie_details/factories/movie_details_factory.dart';
 
 import 'app_routes.dart';
 
@@ -7,8 +9,17 @@ class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.home:
-        return MaterialPageRoute(
-          builder: (_) => const HomePage(),
+      case AppRoutes.movieSearch:
+      case AppRoutes.recentMovies:
+        return PageTransitions.fadeTransition(
+          makeHomePage(routeName: settings.name),
+          settings: settings,
+        );
+
+      case AppRoutes.movieDetails:
+        final movieId = settings.arguments as String?;
+        return PageTransitions.slideUpTransition(
+          makeMovieDetailsPage(movieId ?? ''),
           settings: settings,
         );
 

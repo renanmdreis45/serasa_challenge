@@ -41,13 +41,6 @@ class MovieRepositoryImpl implements MovieRepository {
 
       final movieDetails = await remoteDataSource.getMovieDetails(id);
 
-      final movie = Movie(
-        title: movieDetails.title,
-        director: movieDetails.director,
-        year: movieDetails.year,
-      );
-      await saveRecentMovie(movie);
-
       return movieDetails;
     } on HttpException {
       rethrow;

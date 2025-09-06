@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:serasa_challenge/core/routes/app_router.dart';
 import 'package:serasa_challenge/core/routes/app_routes.dart';
-import 'package:serasa_challenge/modules/home/home_page.dart';
+import 'package:serasa_challenge/core/theme/app_theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,9 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Serasa Challenge',
+      theme: AppTheme.darkTheme,
       initialRoute: AppRoutes.home,
       onGenerateRoute: AppRouter.onGenerateRoute,
-      home: const HomePage(),
     );
   }
 }

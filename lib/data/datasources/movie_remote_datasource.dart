@@ -2,7 +2,8 @@ import '../../domain/entities/movie.dart';
 import '../../domain/entities/movie_details.dart';
 import '../api/clients/http_get_client.dart';
 import '../api/exceptions/exceptions.dart';
-import '../api/mappers/mappers.dart';
+import '../api/mappers/movie_details_mapper.dart';
+import '../api/mappers/movie_mapper.dart';
 
 abstract class MovieRemoteDataSource {
   Future<List<Movie>> searchMovies(String query);
@@ -12,23 +13,31 @@ abstract class MovieRemoteDataSource {
 class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
   final IHttpAdapter httpAdapter;
   final String baseUrl;
+  final String apiKey;
 
   MovieRemoteDataSourceImpl({
     required this.httpAdapter,
-    this.baseUrl = '',
+    this.baseUrl = 'http://www.omdbapi.com',
+    this.apiKey = '9679c274',
   });
 
   @override
   Future<List<Movie>> searchMovies(String query) async {
     try {
       final response = await httpAdapter.get<Map<String, dynamic>>(
-        '$baseUrl/movies/search',
-        queryParams: {'q': query},
+        baseUrl,
+        queryParams: {'s': query, 'apikey': apiKey, 'type': 'movie'},
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        final List<dynamic> moviesJson = response.data!['movies'] ?? [];
-        return MovieMapper.fromJsonList(moviesJson);
+        final data = response.data!;
+
+        if (data['Response'] == 'True' && data['Search'] != null) {
+          final List<dynamic> searchResults = data['Search'];
+          return MovieMapper.fromJsonList(searchResults);
+        } else {
+          return [];
+        }
       }
 
       throw BadResponseException(
@@ -46,11 +55,29 @@ class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
   Future<MovieDetails> getMovieDetails(String id) async {
     try {
       final response = await httpAdapter.get<Map<String, dynamic>>(
-        '$baseUrl/movies/$id',
+        baseUrl,
+        queryParams: {'i': id, 'apikey': apiKey, 'plot': 'full'},
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        return MovieDetailsMapper.fromJson(response.data!);
+        final data = response.data!;
+
+        if (data['Response'] == 'True') {
+          return MovieDetailsMapper.fromJson({
+            'id': id,
+            'title': data['Title'] ?? '',
+            'director': data['Director'] ?? '',
+            'year': int.tryParse(data['Year'] ?? '0') ?? 0,
+            'genre': data['Genre'] ?? '',
+            'synopsis': data['Plot'] ?? '',
+            'poster': data['Poster'] ?? '',
+          });
+        } else {
+          throw BadResponseException(
+            data['Error'] ?? 'Filme não encontrado',
+            statusCode: 404,
+          );
+        }
       }
 
       throw BadResponseException(

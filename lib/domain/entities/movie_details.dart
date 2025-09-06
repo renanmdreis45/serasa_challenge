@@ -4,6 +4,7 @@ class MovieDetails {
   final int year;
   final String genre;
   final String synopsis;
+  final String poster;
 
   MovieDetails._({
     required this.title,
@@ -11,6 +12,7 @@ class MovieDetails {
     required this.year,
     required this.genre,
     required this.synopsis,
+    required this.poster,
   });
 
   factory MovieDetails({
@@ -19,11 +21,13 @@ class MovieDetails {
     required int year,
     required String genre,
     required String synopsis,
+    required String poster,
   }) => MovieDetails._(
     title: title,
     director: director,
     year: year,
     genre: genre,
     synopsis: synopsis,
+    poster: poster,
   );
 }
