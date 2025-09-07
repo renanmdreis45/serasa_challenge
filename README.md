@@ -11,9 +11,10 @@ A aplicação CineVault permite aos usuários buscar filmes, visualizar detalhes
 ## 📱 Demonstração
 
 ### Vídeo de Demonstração
-https://github.com/user-attachments/assets/your-video-file-here
 
-*Demonstração completa das funcionalidades do aplicativo CineVault, incluindo busca de filmes, navegação, detalhes e responsividade.*
+https://github.com/user-attachments/assets/b2e92156-30d9-4785-af73-06ca22954f3a
+
+*Demonstração completa das funcionalidades do aplicativo CineVault, incluindo busca de filmes, navegação, detalhes e responsividade no dispositivo físico Iphone 15.*
 
 ## 🏗️ Decisões Arquiteturais
 
