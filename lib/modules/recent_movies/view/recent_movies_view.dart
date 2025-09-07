@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:serasa_challenge/core/constants/app_breakpoints.dart';
 import 'package:serasa_challenge/core/extensions/navigator_extensions.dart';
 import 'package:serasa_challenge/core/routes/app_routes.dart';
+import 'package:serasa_challenge/core/widgets/responsive_builder.dart';
 
 import '../viewmodel/bloc/recent_movies_bloc.dart';
 import '../viewmodel/bloc/recent_movies_event.dart';
@@ -24,8 +26,7 @@ class _RecentMoviesViewState extends State<RecentMoviesView> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return ResponsiveWrapper(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -91,23 +92,34 @@ class _RecentMoviesViewState extends State<RecentMoviesView> {
                 }
 
                 if (state is RecentMoviesLoaded) {
-                  return GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
+                  return ResponsiveBuilder(
+                    builder: (context, constraints) {
+                      final crossAxisCount =
+                          AppBreakpoints.getGridCrossAxisCount(
+                            constraints.maxWidth,
+                          );
+                      final aspectRatio = AppBreakpoints.getCardAspectRatio(
+                        constraints.maxWidth,
+                      );
+
+                      return GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16,
-                          childAspectRatio: 0.7,
+                          childAspectRatio: aspectRatio,
                         ),
-                    itemCount: state.movies.length,
-                    itemBuilder: (context, index) {
-                      final movie = state.movies[index];
-                      return MovieGridCard(
-                        movie: movie,
-                        onTap: () {
-                          context.pushNamed(
-                            AppRoutes.movieDetails,
-                            arguments: movie.id,
+                        itemCount: state.movies.length,
+                        itemBuilder: (context, index) {
+                          final movie = state.movies[index];
+                          return MovieGridCard(
+                            movie: movie,
+                            onTap: () {
+                              context.pushNamed(
+                                AppRoutes.movieDetails,
+                                arguments: movie.id,
+                              );
+                            },
                           );
                         },
                       );

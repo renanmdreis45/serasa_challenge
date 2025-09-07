@@ -3,7 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:serasa_challenge/core/constants/app_images.dart';
 import 'package:serasa_challenge/core/routes/app_routes.dart';
 import 'package:serasa_challenge/modules/recent_movies/view/recent_movies_view.dart';
-import 'package:serasa_challenge/modules/search_movies/view/search_movies_view.dart';
+
+import '../../modules/search_movies/view/search_movies_view.dart';
 
 class MainNavigationWrapper extends StatefulWidget {
   final String? initialRoute;

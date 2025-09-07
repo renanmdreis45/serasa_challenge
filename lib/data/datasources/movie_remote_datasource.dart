@@ -6,7 +6,7 @@ import '../api/mappers/movie_details_mapper.dart';
 import '../api/mappers/movie_mapper.dart';
 
 abstract class MovieRemoteDataSource {
-  Future<List<Movie>> searchMovies(String query);
+  Future<List<Movie>> searchMovies(String query, {int page = 1});
   Future<MovieDetails> getMovieDetails(String id);
 }
 
@@ -22,11 +22,16 @@ class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
   });
 
   @override
-  Future<List<Movie>> searchMovies(String query) async {
+  Future<List<Movie>> searchMovies(String query, {int page = 1}) async {
     try {
       final response = await httpAdapter.get<Map<String, dynamic>>(
         baseUrl,
-        queryParams: {'s': query, 'apikey': apiKey, 'type': 'movie'},
+        queryParams: {
+          's': query,
+          'apikey': apiKey,
+          'type': 'movie',
+          'page': page.toString(),
+        },
       );
 
       if (response.statusCode == 200 && response.data != null) {

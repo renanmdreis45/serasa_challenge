@@ -13,10 +13,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Serasa Challenge',
+      title: 'CineVault - Your Personal Movie Collection',
       theme: AppTheme.darkTheme,
       initialRoute: AppRoutes.home,
       onGenerateRoute: AppRouter.onGenerateRoute,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

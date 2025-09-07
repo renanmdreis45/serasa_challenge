@@ -1,0 +1,50 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#1a1a2e" stroke="#16213e" stroke-width="10"/>
+  
+  <!-- Film reel outer ring -->
+  <circle cx="100" cy="100" r="75" fill="none" stroke="#e94560" stroke-width="4"/>
+  
+  <!-- Film reel holes -->
+  <circle cx="100" cy="40" r="8" fill="#0f3460"/>
+  <circle cx="140" cy="60" r="8" fill="#0f3460"/>
+  <circle cx="160" cy="100" r="8" fill="#0f3460"/>
+  <circle cx="140" cy="140" r="8" fill="#0f3460"/>
+  <circle cx="100" cy="160" r="8" fill="#0f3460"/>
+  <circle cx="60" cy="140" r="8" fill="#0f3460"/>
+  <circle cx="40" cy="100" r="8" fill="#0f3460"/>
+  <circle cx="60" cy="60" r="8" fill="#0f3460"/>
+  
+  <!-- Center vault/safe -->
+  <circle cx="100" cy="100" r="35" fill="#16213e" stroke="#e94560" stroke-width="3"/>
+  
+  <!-- Vault lock mechanism -->
+  <circle cx="100" cy="100" r="25" fill="none" stroke="#f39c12" stroke-width="2"/>
+  <circle cx="100" cy="100" r="15" fill="#f39c12"/>
+  
+  <!-- Lock keyhole -->
+  <circle cx="100" cy="95" r="4" fill="#1a1a2e"/>
+  <rect x="98" y="95" width="4" height="8" fill="#1a1a2e"/>
+  
+  <!-- Film strip -->
+  <rect x="20" y="85" width="160" height="30" fill="rgba(233, 69, 96, 0.3)" rx="5"/>
+  <rect x="25" y="88" width="8" height="6" fill="#e94560"/>
+  <rect x="37" y="88" width="8" height="6" fill="#e94560"/>
+  <rect x="49" y="88" width="8" height="6" fill="#e94560"/>
+  <rect x="145" y="88" width="8" height="6" fill="#e94560"/>
+  <rect x="157" y="88" width="8" height="6" fill="#e94560"/>
+  <rect x="169" y="88" width="8" height="6" fill="#e94560"/>
+  
+  <rect x="25" y="106" width="8" height="6" fill="#e94560"/>
+  <rect x="37" y="106" width="8" height="6" fill="#e94560"/>
+  <rect x="49" y="106" width="8" height="6" fill="#e94560"/>
+  <rect x="145" y="106" width="8" height="6" fill="#e94560"/>
+  <rect x="157" y="106" width="8" height="6" fill="#e94560"/>
+  <rect x="169" y="106" width="8" height="6" fill="#e94560"/>
+  
+  <!-- Stars for premium feel -->
+  <polygon points="50,30 52,36 58,36 53,40 55,46 50,42 45,46 47,40 42,36 48,36" fill="#f39c12" opacity="0.8"/>
+  <polygon points="150,170 152,176 158,176 153,180 155,186 150,182 145,186 147,180 142,176 148,176" fill="#f39c12" opacity="0.8"/>
+  
+  <!-- Text would go here but SVG text can be tricky, so we'll add it in Flutter -->
+</svg>

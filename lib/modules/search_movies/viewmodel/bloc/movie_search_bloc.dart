@@ -14,6 +14,7 @@ class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState> {
     required this.saveRecentMovieUseCase,
   }) : super(MovieSearchInitial()) {
     on<SearchMovies>(_onSearchMovies);
+    on<LoadMoreMovies>(_onLoadMoreMovies);
     on<ClearSearchResults>(_onClearSearchResults);
   }
 
@@ -24,15 +25,60 @@ class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState> {
     emit(MovieSearchLoading());
 
     try {
-      final movies = await searchMoviesUseCase(event.query);
+      final movies = await searchMoviesUseCase(event.query, page: event.page);
 
       if (movies.isEmpty) {
         emit(MovieSearchEmpty());
       } else {
-        emit(MovieSearchLoaded(movies: movies));
+        emit(
+          MovieSearchLoaded(
+            movies: movies,
+            currentPage: event.page,
+            hasReachedMax:
+                movies.length <
+                10,
+          ),
+        );
       }
     } catch (error) {
       emit(MovieSearchError(message: error.toString()));
+    }
+  }
+
+  Future<void> _onLoadMoreMovies(
+    LoadMoreMovies event,
+    Emitter<MovieSearchState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is MovieSearchLoaded && !currentState.hasReachedMax) {
+      emit(
+        MovieSearchLoadingMore(
+          movies: currentState.movies,
+          currentPage: currentState.currentPage,
+          hasReachedMax: currentState.hasReachedMax,
+        ),
+      );
+
+      try {
+        final newMovies = await searchMoviesUseCase(
+          event.query,
+          page: event.page,
+        );
+
+        if (newMovies.isEmpty) {
+          emit(currentState.copyWith(hasReachedMax: true));
+        } else {
+          emit(
+            MovieSearchLoaded(
+              movies: newMovies,
+              currentPage: event.page,
+              hasReachedMax: newMovies.length < 10,
+            ),
+          );
+        }
+      } catch (error) {
+        emit(MovieSearchError(message: error.toString()));
+      }
     }
   }
 

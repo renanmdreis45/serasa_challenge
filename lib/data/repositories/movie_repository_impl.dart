@@ -17,13 +17,13 @@ class MovieRepositoryImpl implements MovieRepository {
   });
 
   @override
-  Future<List<Movie>> searchMovies(String query) async {
+  Future<List<Movie>> searchMovies(String query, {int page = 1}) async {
     try {
       if (query.trim().isEmpty) {
         throw ArgumentError('Query não pode ser vazia');
       }
 
-      final movies = await remoteDataSource.searchMovies(query);
+      final movies = await remoteDataSource.searchMovies(query, page: page);
       return movies;
     } on HttpException {
       rethrow;

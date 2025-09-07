@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:serasa_challenge/core/constants/app_breakpoints.dart';
 import 'package:serasa_challenge/core/constants/app_images.dart';
 import 'package:serasa_challenge/core/extensions/navigator_extensions.dart';
 import 'package:serasa_challenge/core/widgets/no_image_placeholder.dart';
+import 'package:serasa_challenge/core/widgets/responsive_builder.dart';
 import 'package:serasa_challenge/modules/movie_details/widgets/movie_details_loading_view.dart';
 
 import '../viewmodel/bloc/movie_details_bloc.dart';
@@ -61,113 +63,123 @@ class MovieDetailsView extends StatelessWidget {
   Widget _buildMovieDetailView(BuildContext context, MovieDetailLoaded state) {
     final movieDetail = state.movieDetail;
 
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          expandedHeight: 400,
-          pinned: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          leading: IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.3),
-                shape: BoxShape.circle,
-              ),
-              child: SvgPicture.asset(
-                AppImages.arrowBackIcon,
-                width: 24,
-                height: 24,
-              ),
-            ),
-            onPressed: () => context.pop(),
-          ),
-          flexibleSpace: FlexibleSpaceBar(
-            background: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Theme.of(
-                      context,
-                    ).scaffoldBackgroundColor.withValues(alpha: 0.8),
-                    Theme.of(context).scaffoldBackgroundColor,
-                  ],
+    return ResponsiveBuilder(
+      builder: (context, constraints) {
+        final isTabletOrDesktop =
+            AppBreakpoints.isTablet(constraints.maxWidth) ||
+            AppBreakpoints.isDesktop(constraints.maxWidth);
+        final expandedHeight = isTabletOrDesktop ? 500.0 : 400.0;
+
+        return CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: expandedHeight,
+              pinned: true,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              leading: IconButton(
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    shape: BoxShape.circle,
+                  ),
+                  child: SvgPicture.asset(
+                    AppImages.arrowBackIcon,
+                    width: 24,
+                    height: 24,
+                  ),
                 ),
+                onPressed: () => context.pop(),
               ),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child:
-                        movieDetail.poster.isNotEmpty &&
-                            movieDetail.poster != 'N/A'
-                        ? Image.network(
-                            movieDetail.poster,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
-                            errorBuilder: (context, error, stackTrace) {
-                              return NoImagePlaceholder(
+              flexibleSpace: FlexibleSpaceBar(
+                background: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Theme.of(
+                          context,
+                        ).scaffoldBackgroundColor.withValues(alpha: 0.8),
+                        Theme.of(context).scaffoldBackgroundColor,
+                      ],
+                    ),
+                  ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child:
+                            movieDetail.poster.isNotEmpty &&
+                                movieDetail.poster != 'N/A'
+                            ? Image.network(
+                                movieDetail.poster,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return NoImagePlaceholder(
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    iconSize: 80,
+                                    borderRadius: BorderRadius.circular(12),
+                                  );
+                                },
+                              )
+                            : NoImagePlaceholder(
                                 width: double.infinity,
                                 height: double.infinity,
                                 iconSize: 80,
                                 borderRadius: BorderRadius.circular(12),
-                              );
-                            },
-                          )
-                        : NoImagePlaceholder(
-                            width: double.infinity,
-                            height: double.infinity,
-                            iconSize: 80,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                              ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
 
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  movieDetail.title,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 8),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      movieDetail.title,
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                    ),
+                    const SizedBox(height: 8),
 
-                Text(
-                  '${movieDetail.year} • ${movieDetail.genre}',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).textTheme.bodyMedium?.color,
-                  ),
-                ),
-                const SizedBox(height: 24),
+                    Text(
+                      '${movieDetail.year} • ${movieDetail.genre}',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
 
-                Text(
-                  movieDetail.synopsis,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    height: 1.6,
-                    color: Colors.white.withValues(alpha: 0.9),
-                  ),
+                    Text(
+                      movieDetail.synopsis,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        height: 1.6,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    ),
+                    const SizedBox(height: 100),
+                  ],
                 ),
-                const SizedBox(height: 100),
-              ],
+              ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 

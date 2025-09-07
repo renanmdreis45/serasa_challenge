@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:serasa_challenge/core/constants/app_images.dart';
 
+import '../../../../core/constants/app_images.dart';
 import '../../viewmodel/bloc/movie_search_bloc.dart';
 import '../../viewmodel/bloc/movie_search_event.dart';
 
 class SearchTextField extends StatefulWidget {
   final TextEditingController controller;
+  final Function(String)? onChanged;
 
-  const SearchTextField({super.key, required this.controller});
+  const SearchTextField({super.key, required this.controller, this.onChanged});
 
   @override
   State<SearchTextField> createState() => _SearchTextFieldState();
@@ -32,6 +33,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
   Widget build(BuildContext context) {
     return TextField(
       controller: widget.controller,
+      onChanged: widget.onChanged,
       decoration: InputDecoration(
         hintText: 'Buscar filmes...',
         suffixIcon: _hasText
@@ -48,10 +50,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
                     AppImages.closeIcon,
                     width: 20,
                     height: 20,
-                    colorFilter: ColorFilter.mode(
-                      Colors.grey,
-                      BlendMode.srcIn,
-                    ),
+                    colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
                   ),
                 ),
               )

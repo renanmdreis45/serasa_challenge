@@ -26,4 +26,30 @@ class Movie {
     year: year,
     poster: poster,
   );
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Movie &&
+        other.id == id &&
+        other.title == title &&
+        other.director == director &&
+        other.year == year &&
+        other.poster == poster;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        title.hashCode ^
+        director.hashCode ^
+        year.hashCode ^
+        poster.hashCode;
+  }
+
+  @override
+  String toString() {
+    return 'Movie(id: $id, title: $title, director: $director, year: $year, poster: $poster)';
+  }
 }
